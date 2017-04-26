@@ -6,19 +6,20 @@ public class Frame {
 	private int frameId;
 	private int time;
 	private Page resident;
-	
-	public Frame(int frameId,boolean isFree){
-		this.frameId=frameId;
-		this.isFree=isFree;
+
+	public Frame(int frameId, boolean isFree) {
+		this.frameId = frameId;
+		this.isFree = isFree;
 	}
-	
+
 	public int getTime() {
 		return time;
 	}
+
 	public void setTime(int time) {
 		this.time = time;
 	}
-	
+
 	public int getFrameId() {
 		return frameId;
 	}
@@ -33,7 +34,7 @@ public class Frame {
 
 	public void setProcessId(int processId) {
 		this.processId = processId;
-	}	
+	}
 
 	public Page getResident() {
 		return resident;
@@ -50,5 +51,5 @@ public class Frame {
 	public void setFree(boolean isFree) {
 		this.isFree = isFree;
 	}
-	
+
 }
