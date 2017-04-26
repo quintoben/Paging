@@ -28,11 +28,13 @@ public class Paging {
 				LRUPagingSimulator lru=new LRUPagingSimulator(machineSize,pageSize,processSize,jobMix,reference,algorithm);
 				lru.run();
 			}
-			else if(algorithm.equals("filo")){
-				
+			else if(algorithm.equals("lifo")){
+				LIFOPagingSimulator lifo=new LIFOPagingSimulator(machineSize,pageSize,processSize,jobMix,reference,algorithm);
+				lifo.run();
 			}
 			else if(algorithm.equals("random")){
-				
+				RandomPagingSimulator random=new RandomPagingSimulator(machineSize,pageSize,processSize,jobMix,reference,algorithm);
+				random.run();
 			}
 			else{
 				System.out.println("Please check the algorithm you choose!");

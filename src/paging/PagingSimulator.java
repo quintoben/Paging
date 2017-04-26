@@ -70,9 +70,7 @@ public abstract class PagingSimulator {
 		this.randomIndex=0;
 	}
 	
-	public void run(){
-		
-	}
+	public abstract void run();
 	
 	protected int hitNum(Process process){
 		for(Frame f:frameTable){
@@ -129,17 +127,25 @@ public abstract class PagingSimulator {
 //	a random value in 0..S-1 each with probability (1-A-B-C)/S
 	
 	protected void printResult(){
+		int totalEvictTime=0;
+		int totalPageFault=0;
+		int totalResidencyTime=0;
 		for(int i=0;i<processes.length;i++){
 			System.out.print("Process "+(i+1)+" had "+processes[i].getPageFault()+" faults ");
+			totalPageFault+=processes[i].getPageFault();
 			if(processes[i].getEvictTime()==0){
 				System.out.println("\n\t\tWith no evictions, the average residence is undefined.");
 			}
 			else{
+				totalResidencyTime+=processes[i].getResidencyTime();
+				totalEvictTime+=processes[i].getEvictTime();
 				double avg=(double)(processes[i].getResidencyTime())/(double)(processes[i].getEvictTime());
 				System.out.println("and "+avg+" average residency.");
 				System.out.println("Rtime: "+processes[i].getResidencyTime()+" Etime: "+processes[i].getEvictTime());
 			}
 		}
+		double totalAvg=(double)(totalResidencyTime)/(double)(totalEvictTime);
+		System.out.println("The total number of faults is "+totalPageFault+" and the overall average residency is "+totalAvg+".");
 	}
 
 	private List<Integer> readRandom(String path) {

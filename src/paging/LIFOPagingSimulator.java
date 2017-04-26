@@ -1,19 +1,21 @@
 package paging;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Stack;
 
-public class LRUPagingSimulator extends PagingSimulator{
+public class LIFOPagingSimulator extends PagingSimulator{
 
-	private Node head=null;
-	private Node tail=null;
-	Map<Integer,Node> map=new HashMap<Integer,Node>();
-	public LRUPagingSimulator(int machineSize, int pageSize, int processSize,
+	private Stack<Integer> stack;
+	
+	public LIFOPagingSimulator(int machineSize, int pageSize, int processSize,
 			int jobMix, int reference, String algorithm) {
 		super(machineSize, pageSize, processSize, jobMix, reference, algorithm);
 		// TODO Auto-generated constructor stub
+		stack = new Stack<Integer>();
 	}
-	public void run(){
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
 		int total=0;
 		while(total<reference*processes.length){
 			for(int pNum=0;pNum<processes.length&&time[pNum]<reference;pNum++){
@@ -46,90 +48,28 @@ public class LRUPagingSimulator extends PagingSimulator{
 							processes[processId-1].addEvictTime();
 							processes[processId-1].addResidencyTime(total+1-startTime);
 						}
-						//insert the node in front
-						Node node=new Node(frameNum);
-						node.next=head;
-						node.pre=null;
-						if(head!=null){
-							head.pre=node;
-						}
-						head=node;
-						if(tail==null){
-							tail=head;
-						}
-						System.out.println("insert: "+tail.frameNumber);
-						map.put(frameNum,node);
+						stack.push(frameNum);
 					}
 					//hit and update 
 					else{
 						System.out.println("hit "+hit);
-						Node node = map.get(hit);
-
-						if(node.pre!=null){
-							node.pre.next=node.next;
-							if(node.next!=null){
-								node.next.pre=node.pre;
-							}
-							//node is a tail
-							else{
-								tail=node.pre;
-							}
-							node.pre=null;
-							node.next=head;
-							head.pre=node;
-							head=node;
-						}
 						
 					}
 					int rand=randomNumber.get(randomIndex++);
 					double y = rand / (Integer.MAX_VALUE + 1d);
 					System.out.println(y+" "+rand);
 					processes[pNum].setWord(computeW(y,processes[pNum]));
-					System.out.println("head: "+head.frameNumber);
-					Node h=head;
-					Node t=tail;
 
-					while(h!=null){
-						System.out.print(h.frameNumber+" ");
-						h=h.next;
-					}
-					System.out.println();
-					while(t!=null){
-						System.out.print(t.frameNumber+" ");
-						t=t.pre;
-					}
-					System.out.println();
 				}
 			}
 		}
 		printResult();
 	}
-	private class Node{
-		public Node(int frameNumber){
-			this.frameNumber=frameNumber;
-		}
-		int frameNumber;
-		Node next;
-		Node pre;
-	}
+
 	@Override
 	protected int evict() {
 		// TODO Auto-generated method stub
-		int frameNum=tail.frameNumber;
-		System.out.println("tail: "+tail.frameNumber);
-		if(tail.pre==null){
-			tail=null;
-			head=null;
-		}
-		else{
-			System.out.println("pre: "+tail.pre.frameNumber);
-			
-			tail=tail.pre;
-			tail.next=null;
-			System.out.println("current tail: "+tail.frameNumber);
-		}
-		map.remove(frameNum);
-		
-		return frameNum;
+		return stack.pop();
 	}
+
 }
